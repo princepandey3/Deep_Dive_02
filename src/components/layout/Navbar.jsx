@@ -9,10 +9,6 @@ const NAV_ITEMS = [
   { label: 'Dashboard', to: '/dashboard' },
 ]
 
-/**
- * Navbar
- * Sticky top navigation. Gains a frosted border on scroll.
- */
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
 
@@ -24,37 +20,33 @@ export default function Navbar() {
 
   return (
     <header
-      className={`
-        sticky top-0 z-50 w-full
-        transition-all duration-300
-        ${scrolled
-          ? 'bg-ink/80 backdrop-blur-xl border-b border-white/[0.07] shadow-2xl shadow-black/40'
-          : 'bg-transparent border-b border-transparent'
-        }
-      `}
+      className="sticky top-0 z-50 w-full transition-all duration-300"
+      style={scrolled ? {
+        background: 'rgba(9,9,11,0.85)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
+        boxShadow: '0 4px 40px rgba(0,0,0,0.5)',
+      } : {
+        background: 'transparent',
+        borderBottom: '1px solid transparent',
+      }}
     >
       <nav className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-6">
-
-        {/* Left — brand */}
         <Logo />
 
-        {/* Center — nav links */}
         <ul className="hidden sm:flex items-center gap-7">
           {NAV_ITEMS.map(({ label, to }) => (
-            <li key={to}>
-              <NavLink to={to}>{label}</NavLink>
-            </li>
+            <li key={to}><NavLink to={to}>{label}</NavLink></li>
           ))}
         </ul>
 
-        {/* Right — CTA */}
         <div className="flex items-center gap-3">
-          <StatusBadge variant="accent">Phase 1</StatusBadge>
+          
           <Link to="/dashboard" className="btn-primary hidden sm:inline-flex">
             Start Interview
           </Link>
         </div>
-
       </nav>
     </header>
   )

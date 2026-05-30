@@ -1,17 +1,3 @@
-/**
- * src/config/geminiEmbeddings.js
- * ─────────────────────────────────────────────────────────────────────────────
- * Custom LangChain-compatible embeddings class that calls the Gemini API
- * directly with outputDimensionality support.
- *
- * Why: @langchain/google-genai v0.1.x does NOT support outputDimensionality,
- * so passing it is silently ignored and the model returns full 3072-dim vectors
- * which exceed Supabase pgvector's 2000-dim limit for indexes.
- *
- * This class is a drop-in replacement — it implements the same
- * embedDocuments() / embedQuery() interface LangChain expects.
- */
-
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { Embeddings }          from '@langchain/core/embeddings'
 
@@ -24,9 +10,7 @@ export class GeminiEmbeddingsWithDims extends Embeddings {
       .getGenerativeModel({ model })
   }
 
-  /**
-   * Embed a single string — used by the pre-flight check and similarity search.
-   */
+
   async embedQuery(text) {
     const res = await this.client.embedContent({
       content:  { role: 'user', parts: [{ text }] },
@@ -35,10 +19,7 @@ export class GeminiEmbeddingsWithDims extends Embeddings {
     return res.embedding.values
   }
 
-  /**
-   * Embed an array of strings — used by SupabaseVectorStore.fromDocuments().
-   * Batches in groups of 100 to stay within API limits.
-   */
+
   async embedDocuments(texts) {
     const BATCH = 100
     const results = []

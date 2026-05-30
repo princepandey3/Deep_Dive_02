@@ -12,17 +12,20 @@ export default {
         body:    ['"DM Sans"', 'sans-serif'],
       },
       colors: {
-        ink:    '#0D0F14',
-        fog:    '#F4F3EF',
-        slate:  '#8A8F9E',
-        accent: '#4F6EF7',
-        pulse:  '#E05C3A',
-        glass:  'rgba(255,255,255,0.06)',
+        ink:     '#0D0F14',
+        fog:     '#F4F3EF',
+        slate:   '#8A8F9E',
+        accent:  '#4F6EF7',
+        pulse:   '#E05C3A',
+        glass:   'rgba(255,255,255,0.06)',
+        // Named depth tokens — avoids @apply opacity-modifier issues
+        surface: '#0f1117',   // slightly lighter than zinc-950 for cards
+        panel:   '#131620',   // sidebar / chat panel
       },
       backgroundImage: {
         'grid-subtle': `
-          linear-gradient(rgba(79,110,247,0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(79,110,247,0.04) 1px, transparent 1px)
+          linear-gradient(rgba(79,110,247,0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(79,110,247,0.06) 1px, transparent 1px)
         `,
       },
       backgroundSize: {

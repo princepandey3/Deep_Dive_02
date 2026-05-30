@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, FileText, BrainCircuit, MessageSquareCode, Zap } from 'lucide-react'
 import StatusBadge from '@/components/ui/StatusBadge.jsx'
 
-/* ─── Feature card data ─────────────────────────────────────── */
 const FEATURES = [
   {
     icon: FileText,
@@ -31,7 +30,6 @@ const FEATURES = [
   },
 ]
 
-/* ─── Sub-components ────────────────────────────────────────── */
 function HeroSection() {
   return (
     <section className="mx-auto max-w-6xl px-6 pt-24 pb-20 text-center">
@@ -69,7 +67,7 @@ function HeroSection() {
         </a>
       </div>
 
-      {/* Decorative terminal preview */}
+      {}
       <TerminalPreview />
     </section>
   )
@@ -78,14 +76,14 @@ function HeroSection() {
 function TerminalPreview() {
   return (
     <div className="animate-fade-up animate-delay-400 mt-16 mx-auto max-w-2xl glass-card p-0 overflow-hidden text-left">
-      {/* Window chrome */}
+      {}
       <div className="flex items-center gap-1.5 px-4 py-3 border-b border-white/[0.06]">
         <span className="w-3 h-3 rounded-full bg-pulse/70" />
         <span className="w-3 h-3 rounded-full bg-yellow-500/50" />
         <span className="w-3 h-3 rounded-full bg-emerald-500/50" />
         <span className="ml-3 font-mono text-xs text-slate">interview_session.log</span>
       </div>
-      {/* Content */}
+      {}
       <div className="p-5 font-mono text-sm space-y-2">
         <p>
           <span className="text-accent">system</span>
@@ -161,7 +159,6 @@ function FeatureCard({ icon: Icon, title, body, phase, delay }) {
   )
 }
 
-/* ─── Page export ───────────────────────────────────────────── */
 export default function HomePage() {
   return (
     <>

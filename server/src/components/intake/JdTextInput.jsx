@@ -3,11 +3,6 @@ import FieldError from '@/components/ui/FieldError.jsx'
 
 const MAX_CHARS = 8000
 
-/**
- * JdTextInput
- * Controlled textarea for pasting a job description.
- * Shows character count and an accessible error state.
- */
 export default function JdTextInput({ value, onChange, error }) {
   const textareaId = useId()
   const errorId    = useId()
@@ -45,7 +40,7 @@ Include the role title, responsibilities, required skills, and any technical sta
         `}
       />
 
-      {/* Footer row: error + char count */}
+      {}
       <div className="flex items-start justify-between gap-4">
         <FieldError id={errorId} message={error} />
         <span

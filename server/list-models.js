@@ -6,7 +6,6 @@ const response = await fetch(
 );
 const data = await response.json();
 
-// Show only embedding models
 const embeddingModels = data.models?.filter((m) =>
   m.supportedGenerationMethods?.includes("embedContent"),
 );

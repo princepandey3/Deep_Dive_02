@@ -15,12 +15,12 @@ if (EMBEDDING_PROVIDER === 'openai' || LLM_PROVIDER === 'openai') {
   if (!process.env.OPENAI_API_KEY) missing.push('OPENAI_API_KEY')
 }
 if (EMBEDDING_PROVIDER === 'gemini' || LLM_PROVIDER === 'gemini') {
-  // FIX Bug 2: .env.example has GEMINI_API_KEY but code reads GOOGLE_API_KEY
-  // Normalise: accept either name, prefer GOOGLE_API_KEY
+
+
   if (!process.env.GOOGLE_API_KEY && !process.env.GEMINI_API_KEY) {
     missing.push('GOOGLE_API_KEY (or GEMINI_API_KEY)')
   }
-  // Alias GEMINI_API_KEY → GOOGLE_API_KEY so the rest of the code works
+
   if (!process.env.GOOGLE_API_KEY && process.env.GEMINI_API_KEY) {
     process.env.GOOGLE_API_KEY = process.env.GEMINI_API_KEY
   }

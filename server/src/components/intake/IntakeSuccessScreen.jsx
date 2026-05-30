@@ -1,10 +1,3 @@
-/**
- * src/components/intake/IntakeSuccessScreen.jsx  (Phase 5)
- * ─────────────────────────────────────────────────────────────────────────────
- * FIX: removed manual encodeURIComponent() on question — URLSearchParams
- * already encodes values, so double-encoding caused garbled text on ChatPage.
- */
-
 import React from 'react'
 import { CheckCircle2, RotateCcw, MessageSquare, BookOpen, ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -15,7 +8,7 @@ export default function IntakeSuccessScreen({ resumeFile, apiResult, onReset }) 
 
   function startInterview() {
     if (!apiResult?.sessionId || !apiResult?.question) return
-    // FIX: URLSearchParams encodes values automatically — do NOT wrap in encodeURIComponent
+
     const params = new URLSearchParams({
       sessionId: apiResult.sessionId,
       question:  apiResult.question,
@@ -26,14 +19,14 @@ export default function IntakeSuccessScreen({ resumeFile, apiResult, onReset }) 
   return (
     <div className="flex flex-col items-center text-center py-10 px-4 gap-6 animate-fade-up">
 
-      {/* Icon */}
+      {}
       <div className="relative">
         <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
           <CheckCircle2 size={30} className="text-emerald-400" />
         </div>
       </div>
 
-      {/* Copy */}
+      {}
       <div>
         <StatusBadge variant="success" className="mb-3">Interview Ready</StatusBadge>
         <h3 className="font-display text-2xl text-fog mb-2">
@@ -44,7 +37,7 @@ export default function IntakeSuccessScreen({ resumeFile, apiResult, onReset }) 
         </p>
       </div>
 
-      {/* Opening question preview */}
+      {}
       {apiResult?.question && (
         <div className="glass-card px-5 py-4 text-left w-full max-w-lg">
           <div className="flex items-center gap-2 mb-3">
@@ -59,7 +52,7 @@ export default function IntakeSuccessScreen({ resumeFile, apiResult, onReset }) 
         </div>
       )}
 
-      {/* RAG source excerpts */}
+      {}
       {apiResult?.sources?.length > 0 && (
         <div className="glass-card px-5 py-4 text-left w-full max-w-lg">
           <div className="flex items-center gap-2 mb-3">
@@ -81,14 +74,14 @@ export default function IntakeSuccessScreen({ resumeFile, apiResult, onReset }) 
         </div>
       )}
 
-      {/* Session info */}
+      {}
       {apiResult?.sessionId && (
         <p className="font-mono text-[10px] text-slate/40">
           session: {apiResult.sessionId}
         </p>
       )}
 
-      {/* CTA buttons */}
+      {}
       <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-lg">
         <button
           type="button"

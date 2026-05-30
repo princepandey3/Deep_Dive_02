@@ -3,11 +3,6 @@ import { FileUp } from 'lucide-react'
 import FileChip from '@/components/ui/FileChip.jsx'
 import FieldError from '@/components/ui/FieldError.jsx'
 
-/**
- * JdFileInput
- * Simple file picker for uploading a JD as a document.
- * Accepts PDF, .doc, .docx, and plain text files.
- */
 const ACCEPTED = '.pdf,.doc,.docx,.txt,application/pdf,text/plain'
 
 export default function JdFileInput({ file, onChange, onRemove, error }) {

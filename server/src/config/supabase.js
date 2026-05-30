@@ -17,7 +17,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     detectSessionInUrl: false,
   },
   realtime: {
-    transport: ws, // ← fixes Node 20 WebSocket issue
+    transport: ws,
   },
 });
 

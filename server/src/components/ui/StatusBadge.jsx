@@ -1,10 +1,5 @@
 import React from 'react'
 
-/**
- * StatusBadge
- * Reusable pill badge for labels, statuses, phase indicators, etc.
- * variant: 'default' | 'accent' | 'pulse' | 'success'
- */
 const variants = {
   default: 'bg-white/[0.06] text-slate border-white/10',
   accent:  'bg-accent/10 text-accent border-accent/20',

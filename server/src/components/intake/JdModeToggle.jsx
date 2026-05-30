@@ -6,11 +6,6 @@ const MODES = [
   { key: 'file', label: 'Upload File', Icon: FileUp    },
 ]
 
-/**
- * JdModeToggle
- * Two-button segmented control to switch between
- * pasting the JD as plain text or uploading a file.
- */
 export default function JdModeToggle({ mode, onChange }) {
   return (
     <div

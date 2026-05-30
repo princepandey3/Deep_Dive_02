@@ -1,24 +1,20 @@
 import React from 'react'
 import { ArrowRight, CheckCircle2, Loader2 } from 'lucide-react'
 
-/**
- * IntakeSubmitBar
- * Bottom action bar: readiness checklist dots + submit CTA.
- */
 export default function IntakeSubmitBar({ isReady, isSubmitting, hasResume, hasJd }) {
-  // FIX: button is disabled while submitting too, shows spinner
+
   const disabled = !isReady || isSubmitting
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
 
-      {/* Readiness indicators */}
+      {}
       <div className="flex items-center gap-4">
         <Dot label="Résumé"          done={hasResume} />
         <Dot label="Job Description" done={hasJd}     />
       </div>
 
-      {/* Submit */}
+      {}
       <button
         type="submit"
         disabled={disabled}
@@ -32,7 +28,7 @@ export default function IntakeSubmitBar({ isReady, isSubmitting, hasResume, hasJ
             : 'bg-white/[0.05] text-slate/50 cursor-not-allowed border border-white/[0.08]'}
         `}
       >
-        {/* FIX: show spinner + label while in-flight */}
+        {}
         {isSubmitting ? (
           <>
             <Loader2 size={15} className="animate-spin" />

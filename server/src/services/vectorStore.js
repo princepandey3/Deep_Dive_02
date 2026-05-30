@@ -1,14 +1,3 @@
-/**
- * src/services/vectorStore.js
- *
- * FIX: SupabaseVectorStore.fromDocuments only writes (content, metadata, embedding).
- * It does NOT map metadata fields to real columns like session_id, source,
- * chunk_index — so those NOT NULL columns get null and Supabase rejects the insert.
- *
- * Solution: embed manually then insert with supabase client directly,
- * mapping every column explicitly.
- */
-
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import supabase from "../config/supabase.js";
 import { createEmbeddings } from "../config/llm.js";
@@ -24,7 +13,7 @@ export async function insertDocuments(docs) {
 
   const embeddings = getEmbeddings();
 
-  // Pre-flight: verify embeddings work before processing all docs
+
   let testVec;
   try {
     testVec = await embeddings.embedQuery(docs[0].pageContent);
@@ -45,21 +34,21 @@ export async function insertDocuments(docs) {
     });
   }
 
-  // Embed all documents
+
   const texts = docs.map((d) => d.pageContent);
   const vectors = await embeddings.embedDocuments(texts);
 
-  // Build rows with every column mapped explicitly
+
   const rows = docs.map((doc, i) => ({
     content: doc.pageContent,
     metadata: doc.metadata,
     embedding: vectors[i],
-    session_id: doc.metadata.session_id, // real column ← was null before
-    source: doc.metadata.source, // real column ← was null before
-    chunk_index: doc.metadata.chunk_index, // real column ← was null before
+    session_id: doc.metadata.session_id,
+    source: doc.metadata.source,
+    chunk_index: doc.metadata.chunk_index,
   }));
 
-  // Insert in batches of 100 to avoid request size limits
+
   const BATCH = 100;
   for (let i = 0; i < rows.length; i += BATCH) {
     const batch = rows.slice(i, i + BATCH);

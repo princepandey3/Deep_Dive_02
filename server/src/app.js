@@ -1,18 +1,11 @@
-/**
- * src/app.js  (Phase 5 update)
- * ─────────────────────────────────────────────────────────────────────────────
- * Phase 5 change: mount chat routes at /api
- */
-
 import express     from 'express'
 import cors        from 'cors'
 import uploadRoutes from './routes/upload.routes.js'
-import chatRoutes   from './routes/chat.routes.js'        // NEW
+import chatRoutes   from './routes/chat.routes.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
 const app = express()
 
-// ── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173')
   .split(',')
   .map((o) => o.trim())
@@ -28,18 +21,13 @@ app.use(
   })
 )
 
-// ── Body parsers ──────────────────────────────────────────────────────────────
-// multer handles multipart/form-data; express.json covers all JSON API routes
 app.use(express.json({ limit: '1mb' }))
 
-// ── Health check ──────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 
-// ── API routes ────────────────────────────────────────────────────────────────
 app.use('/api', uploadRoutes)
-app.use('/api', chatRoutes)   // NEW — mounts POST /api/chat
+app.use('/api', chatRoutes)
 
-// ── Global error handler (must be last) ──────────────────────────────────────
 app.use(errorHandler)
 
 export default app

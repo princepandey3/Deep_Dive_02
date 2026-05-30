@@ -3,18 +3,6 @@ import { UploadCloud, FileWarning, CheckCircle2 } from 'lucide-react'
 import FileChip from '@/components/ui/FileChip.jsx'
 import FieldError from '@/components/ui/FieldError.jsx'
 
-/**
- * ResumeDropZone
- * Accessible drag-and-drop zone for PDF résumé upload.
- *
- * Props:
- *  file          – File | null
- *  dragState     – 'idle' | 'over' | 'reject'
- *  error         – string | undefined
- *  onDragEnter, onDragLeave, onDragOver, onDrop
- *  onInputChange – file input change handler
- *  onRemove      – clears the accepted file
- */
 export default function ResumeDropZone({
   file,
   dragState,
@@ -38,7 +26,7 @@ export default function ResumeDropZone({
 
   return (
     <div>
-      {/* Section label */}
+      {}
       <div className="flex items-center justify-between mb-3">
         <label
           htmlFor={inputId}
@@ -49,7 +37,7 @@ export default function ResumeDropZone({
         <span className="font-mono text-[10px] text-slate">PDF only · max 10 MB</span>
       </div>
 
-      {/* Drop zone */}
+      {}
       <div
         role="button"
         tabIndex={0}
@@ -70,7 +58,7 @@ export default function ResumeDropZone({
           ${error && !file ? 'border-pulse/40' : ''}
         `}
       >
-        {/* Hidden file input */}
+        {}
         <input
           ref={inputRef}
           id={inputId}
@@ -82,12 +70,12 @@ export default function ResumeDropZone({
         />
 
         <div className="flex flex-col items-center justify-center gap-3 py-10 px-6 text-center select-none">
-          {/* Idle / over / reject states */}
+          {}
           {!file && dragState === 'idle'   && <UploadCloud   size={32} className="text-slate/60" />}
           {!file && dragState === 'over'   && <UploadCloud   size={32} className="text-accent animate-bounce" />}
           {!file && dragState === 'reject' && <FileWarning   size={32} className="text-pulse" />}
 
-          {/* File accepted */}
+          {}
           {file && (
             <>
               <CheckCircle2 size={28} className="text-emerald-400" />
@@ -98,7 +86,7 @@ export default function ResumeDropZone({
             </>
           )}
 
-          {/* Prompt text (no file) */}
+          {}
           {!file && (
             <>
               <div>

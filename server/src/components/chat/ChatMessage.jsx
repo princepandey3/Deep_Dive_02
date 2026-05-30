@@ -1,19 +1,6 @@
-/**
- * src/components/chat/ChatMessage.jsx
- * ─────────────────────────────────────────────────────────────────────────────
- * Renders a single message bubble in the chat UI.
- *
- * Props:
- *   role       'user' | 'assistant'
- *   content    string
- *   isLoading  boolean  — shows the animated typing indicator
- *   ragSources Array<{ source: string, excerpt: string }>  (optional)
- */
-
 import React, { useState } from 'react'
 import { BookOpen, ChevronDown, ChevronUp, User, Bot } from 'lucide-react'
 
-// ── Typing indicator ──────────────────────────────────────────────────────────
 function TypingDots() {
   return (
     <span className="inline-flex items-center gap-1 py-0.5" aria-label="AI is thinking">
@@ -28,7 +15,6 @@ function TypingDots() {
   )
 }
 
-// ── RAG source drawer ─────────────────────────────────────────────────────────
 function RagSources({ sources }) {
   const [open, setOpen] = useState(false)
   if (!sources?.length) return null
@@ -65,7 +51,6 @@ function RagSources({ sources }) {
   )
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
 export default function ChatMessage({ role, content, isLoading, ragSources }) {
   const isUser = role === 'user'
 
@@ -75,7 +60,7 @@ export default function ChatMessage({ role, content, isLoading, ragSources }) {
         isUser ? 'flex-row-reverse' : 'flex-row'
       }`}
     >
-      {/* Avatar */}
+      {}
       <div
         className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 ${
           isUser
@@ -91,7 +76,7 @@ export default function ChatMessage({ role, content, isLoading, ragSources }) {
         )}
       </div>
 
-      {/* Bubble */}
+      {}
       <div
         className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
           isUser

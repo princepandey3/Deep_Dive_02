@@ -9,10 +9,6 @@ const NAV_ITEMS = [
   { label: 'Dashboard', to: '/dashboard' },
 ]
 
-/**
- * Navbar
- * Sticky top navigation. Gains a frosted border on scroll.
- */
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
 
@@ -35,10 +31,10 @@ export default function Navbar() {
     >
       <nav className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-6">
 
-        {/* Left — brand */}
+        {}
         <Logo />
 
-        {/* Center — nav links */}
+        {}
         <ul className="hidden sm:flex items-center gap-7">
           {NAV_ITEMS.map(({ label, to }) => (
             <li key={to}>
@@ -47,7 +43,7 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Right — CTA */}
+        {}
         <div className="flex items-center gap-3">
           <StatusBadge variant="accent">Phase 1</StatusBadge>
           <Link to="/dashboard" className="btn-primary hidden sm:inline-flex">

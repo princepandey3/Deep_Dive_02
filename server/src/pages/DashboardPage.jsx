@@ -2,7 +2,6 @@ import React from 'react'
 import DashboardIntakeForm from '@/components/intake/DashboardIntakeForm.jsx'
 import StatusBadge         from '@/components/ui/StatusBadge.jsx'
 
-/* ─── Header ────────────────────────────────────────────────── */
 function DashboardHeader() {
   return (
     <div className="mb-10 animate-fade-up">
@@ -22,7 +21,6 @@ function DashboardHeader() {
   )
 }
 
-/* ─── Progress bar ──────────────────────────────────────────── */
 function ProgressBar() {
   return (
     <div className="glass-card p-5 mb-8 animate-fade-up animate-delay-100">
@@ -43,14 +41,13 @@ function ProgressBar() {
   )
 }
 
-/* ─── Page export ───────────────────────────────────────────── */
 export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-2xl w-full px-6 py-16">
       <DashboardHeader />
       <ProgressBar />
 
-      {/* Main intake card */}
+      {}
       <div className="glass-card p-8 animate-fade-up animate-delay-200">
         <DashboardIntakeForm />
       </div>

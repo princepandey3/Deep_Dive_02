@@ -1,11 +1,3 @@
-/**
- * src/pages/ChatPage.jsx  (Phase 5)
- * ─────────────────────────────────────────────────────────────────────────────
- * FIX: removed decodeURIComponent() on params.get('question').
- * URLSearchParams.get() already returns the decoded value — calling
- * decodeURIComponent() on top of it double-decoded and garbled the text.
- */
-
 import React from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import ChatInterface from '@/components/chat/ChatInterface.jsx'
@@ -15,7 +7,7 @@ export default function ChatPage() {
   const navigate = useNavigate()
 
   const sessionId       = params.get('sessionId')
-  // FIX: params.get() already returns the decoded string — no decodeURIComponent needed
+
   const openingQuestion = params.get('question')
 
   if (!sessionId || !openingQuestion) {

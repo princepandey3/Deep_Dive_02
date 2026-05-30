@@ -1,44 +1,24 @@
 import { useState, useCallback, useRef } from 'react'
 
-/**
- * useIntakeForm  (Phase 3 update)
- * ─────────────────────────────────────────────────────────────────────────────
- * Added: real API submission to POST /api/upload via FormData.
- * The hook now tracks `isSubmitting` and `apiResult` alongside the existing
- * form state so the success screen can display parsed data.
- *
- * Returns:
- *  resumeFile      – File | null
- *  jdText          – string
- *  jdFile          – File | null
- *  jdMode          – 'text' | 'file'
- *  dragState       – 'idle' | 'over' | 'reject'
- *  errors          – { resume?: string, jd?: string, api?: string }
- *  isReady         – boolean (form is submittable)
- *  isSubmitting    – boolean (network request in flight)
- *  submitted       – boolean (request succeeded)
- *  apiResult       – { resumeText, jobDescription, meta } | null
- *  handlers        – all event handlers
- */
 export function useIntakeForm() {
   const [resumeFile, setResumeFile]   = useState(null)
   const [jdText, setJdText]           = useState('')
   const [jdFile, setJdFile]           = useState(null)
-  const [jdMode, setJdMode]           = useState('text')   // 'text' | 'file'
-  const [dragState, setDragState]     = useState('idle')   // 'idle' | 'over' | 'reject'
+  const [jdMode, setJdMode]           = useState('text')
+  const [dragState, setDragState]     = useState('idle')
   const [errors, setErrors]           = useState({})
   const [submitted, setSubmitted]     = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [apiResult, setApiResult]     = useState(null)
   const dragCounter                   = useRef(0)
 
-  /* ── Helpers ─────────────────────────────────────── */
+
   const isPDF = (file) => file?.type === 'application/pdf'
 
   const clearError = (key) =>
     setErrors((prev) => { const next = { ...prev }; delete next[key]; return next })
 
-  /* ── Resume handlers ─────────────────────────────── */
+
   const acceptResumeFile = useCallback((file) => {
     if (!isPDF(file)) {
       setDragState('reject')
@@ -79,7 +59,7 @@ export function useIntakeForm() {
 
   const removeResume = useCallback(() => setResumeFile(null), [])
 
-  /* ── JD handlers ─────────────────────────────────── */
+
   const onJdTextChange = useCallback((e) => {
     setJdText(e.target.value)
     if (e.target.value.trim()) clearError('jd')
@@ -99,7 +79,7 @@ export function useIntakeForm() {
     clearError('jd')
   }, [])
 
-  /* ── Validation ──────────────────────────────────── */
+
   const validate = () => {
     const next = {}
     if (!resumeFile)                              next.resume = 'Please upload your résumé PDF.'
@@ -109,16 +89,16 @@ export function useIntakeForm() {
     return Object.keys(next).length === 0
   }
 
-  /* ── Submit → POST /api/upload ───────────────────── */
+
   const onSubmit = useCallback(async (e) => {
     e.preventDefault()
     if (!validate()) return
 
-    // Build multipart payload
+
     const formData = new FormData()
     formData.append('resume', resumeFile)
 
-    // JD: if file mode, read it as text first; otherwise send the textarea value
+
     let jdContent = jdText.trim()
     if (jdMode === 'file' && jdFile) {
       jdContent = await jdFile.text()
@@ -132,8 +112,8 @@ export function useIntakeForm() {
       const res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
-        // Note: do NOT set Content-Type manually — the browser sets it with
-        // the correct boundary when you pass a FormData body.
+
+
       })
 
       const json = await res.json()
@@ -149,7 +129,7 @@ export function useIntakeForm() {
     } finally {
       setIsSubmitting(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [resumeFile, jdText, jdFile, jdMode])
 
   const resetForm = useCallback(() => {
@@ -163,7 +143,7 @@ export function useIntakeForm() {
     setApiResult(null)
   }, [])
 
-  /* ── Derived ─────────────────────────────────────── */
+
   const isReady =
     !!resumeFile &&
     (jdMode === 'text' ? jdText.trim().length > 0 : !!jdFile)

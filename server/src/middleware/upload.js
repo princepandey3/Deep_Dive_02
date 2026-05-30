@@ -2,10 +2,6 @@ import multer from 'multer'
 
 const MAX_FILE_SIZE_MB = parseInt(process.env.MAX_FILE_SIZE_MB || '10', 10)
 
-/**
- * Use in-memory storage so the file buffer is immediately available
- * to pdf-parse without touching the filesystem.
- */
 const storage = multer.memoryStorage()
 
 const fileFilter = (_req, file, cb) => {

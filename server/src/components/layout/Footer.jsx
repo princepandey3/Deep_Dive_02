@@ -1,10 +1,6 @@
 import React from 'react'
 import Logo from '@/components/ui/Logo.jsx'
 
-/**
- * Footer
- * Minimal footer with brand and attribution.
- */
 export default function Footer() {
   return (
     <footer className="border-t border-white/[0.06] mt-auto">

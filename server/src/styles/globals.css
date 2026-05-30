@@ -37,12 +37,12 @@
 }
 
 @layer components {
-  /* Reusable glass card */
+
   .glass-card {
     @apply bg-white/[0.04] border border-white/[0.08] rounded-2xl backdrop-blur-sm;
   }
 
-  /* Accent underline hover */
+
   .nav-link {
     @apply relative text-slate text-sm font-medium transition-colors duration-200 hover:text-fog;
   }
@@ -58,7 +58,7 @@
     @apply text-fog;
   }
 
-  /* Primary button */
+
   .btn-primary {
     @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
            bg-accent text-white text-sm font-medium
@@ -67,7 +67,7 @@
            active:scale-[0.97];
   }
 
-  /* Ghost button */
+
   .btn-ghost {
     @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
            border border-white/10 text-fog/70 text-sm font-medium
@@ -76,7 +76,7 @@
            active:scale-[0.97];
   }
 
-  /* Section label */
+
   .label-mono {
     @apply font-mono text-xs tracking-widest uppercase text-accent/80;
   }

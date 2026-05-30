@@ -1,25 +1,7 @@
-/**
- * src/hooks/useChat.js
- * ─────────────────────────────────────────────────────────────────────────────
- * Manages all state for an active interview chat session.
- *
- * Responsibilities:
- *  - Holds the messages array and input text
- *  - Calls POST /api/chat to send a candidate message and receive the AI reply
- *  - Auto-scrolls the message list on new messages
- *  - Tracks loading / error state
- *
- * Usage:
- *   const chat = useChat({ sessionId, openingQuestion })
- */
-
 import { useState, useCallback, useRef, useEffect } from 'react'
 
-/**
- * @param {{ sessionId: string, openingQuestion: string }} params
- */
 export function useChat({ sessionId, openingQuestion }) {
-  // Full message history – each entry: { id, role, content, isLoading? }
+
   const [messages, setMessages] = useState(() => {
     if (!openingQuestion) return []
     return [
@@ -36,15 +18,15 @@ export function useChat({ sessionId, openingQuestion }) {
   const [isSending, setIsSending]   = useState(false)
   const [error, setError]           = useState(null)
 
-  // Used to auto-scroll the messages container to the bottom
+
   const bottomRef = useRef(null)
 
-  // Scroll to bottom whenever messages change
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
+
   const appendMessage = (msg) =>
     setMessages((prev) => [...prev, msg])
 
@@ -55,7 +37,7 @@ export function useChat({ sessionId, openingQuestion }) {
       return next
     })
 
-  // ── Send a candidate reply ────────────────────────────────────────────────
+
   const sendMessage = useCallback(async () => {
     const text = inputText.trim()
     if (!text || isSending) return
@@ -63,7 +45,7 @@ export function useChat({ sessionId, openingQuestion }) {
     setError(null)
     setInputText('')
 
-    // 1. Optimistically append the user's message
+
     const userMsg = {
       id:        `user-${Date.now()}`,
       role:      'user',
@@ -72,7 +54,7 @@ export function useChat({ sessionId, openingQuestion }) {
     }
     appendMessage(userMsg)
 
-    // 2. Add a placeholder "thinking" bubble for the AI
+
     const thinkingId = `ai-${Date.now()}`
     appendMessage({
       id:        thinkingId,
@@ -96,7 +78,7 @@ export function useChat({ sessionId, openingQuestion }) {
         throw new Error(json.error || `Server error ${res.status}`)
       }
 
-      // 3. Replace the placeholder with the real AI reply
+
       replaceLastMessage(() => ({
         id:         thinkingId,
         role:       'assistant',
@@ -105,7 +87,7 @@ export function useChat({ sessionId, openingQuestion }) {
         ragSources: json.data.ragSources ?? [],
       }))
     } catch (err) {
-      // Remove the placeholder and surface the error
+
       setMessages((prev) => prev.filter((m) => m.id !== thinkingId))
       setError(err.message)
     } finally {
@@ -113,7 +95,7 @@ export function useChat({ sessionId, openingQuestion }) {
     }
   }, [inputText, isSending, sessionId])
 
-  // ── Keyboard shortcut: Enter to send, Shift+Enter for newline ────────────
+
   const onKeyDown = useCallback(
     (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {

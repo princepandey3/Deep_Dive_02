@@ -1,10 +1,5 @@
-/**
- * src/services/chatHistory.js
- */
-
 import supabase from "../config/supabase.js";
 
-// ── helper: turn a raw Supabase error into a detailed message ─────────────────
 function sbErr(label, error) {
   const detail = [
     error.message,
@@ -18,9 +13,8 @@ function sbErr(label, error) {
   return Object.assign(new Error(`${label}: ${detail}`), { status: 500 });
 }
 
-// ── Create a new chat session ─────────────────────────────────────────────────
 export async function createChatSession(interviewSessionId, openingQuestion) {
-  // First verify the supabase client can read — diagnose key/connection issues
+
   const { error: pingError } = await supabase
     .from("chat_sessions")
     .select("id")
@@ -47,7 +41,6 @@ export async function createChatSession(interviewSessionId, openingQuestion) {
   return { chatSessionId: data.id };
 }
 
-// ── Fetch the next turn index ─────────────────────────────────────────────────
 export async function getNextTurnIndex(chatSessionId) {
   const { data, error } = await supabase
     .from("chat_messages")
@@ -62,7 +55,6 @@ export async function getNextTurnIndex(chatSessionId) {
   return data ? data.turn_index + 1 : 1;
 }
 
-// ── Append messages ───────────────────────────────────────────────────────────
 export async function appendMessages(chatSessionId, messages) {
   if (!messages.length) return;
 
@@ -81,7 +73,6 @@ export async function appendMessages(chatSessionId, messages) {
   if (error) throw sbErr("Failed to insert chat messages", error);
 }
 
-// ── Fetch message history ─────────────────────────────────────────────────────
 export async function getMessages(chatSessionId) {
   const { data, error } = await supabase
     .from("chat_messages")
@@ -94,7 +85,6 @@ export async function getMessages(chatSessionId) {
   return data ?? [];
 }
 
-// ── Look up a chat session by interview_session_id ────────────────────────────
 export async function getChatSessionByInterviewId(interviewSessionId) {
   const { data, error } = await supabase
     .from("chat_sessions")

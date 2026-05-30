@@ -1,11 +1,6 @@
 import React from 'react'
 import { FileText, X } from 'lucide-react'
 
-/**
- * FileChip
- * Compact pill that displays an accepted file name + size
- * with an accessible remove button.
- */
 function formatBytes(bytes) {
   if (bytes < 1024)       return `${bytes} B`
   if (bytes < 1048576)    return `${(bytes / 1024).toFixed(1)} KB`
