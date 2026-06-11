@@ -93,8 +93,7 @@ function formatContext(docs) {
 }
 
 export async function generateOpeningQuestion(sessionId) {
-
-  const docs = await similaritySearch(RETRIEVAL_QUERY, sessionId);
+  const docs = await similaritySearch(RETRIEVAL_QUERY, sessionId, 3);
 
   if (!docs.length) {
     throw Object.assign(
@@ -106,7 +105,6 @@ export async function generateOpeningQuestion(sessionId) {
   }
 
   const context = formatContext(docs);
-
 
   const chain = interviewPrompt.pipe(getLLM()).pipe(new StringOutputParser());
 
@@ -122,7 +120,6 @@ export async function generateOpeningQuestion(sessionId) {
       { status: 422 },
     );
   }
-
 
   const sources = docs.map((doc) => ({
     source: doc.metadata.source,

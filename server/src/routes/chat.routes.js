@@ -1,8 +1,12 @@
-import { Router }     from 'express'
-import { handleChat } from '../controllers/chat.controller.js'
+import { Router } from "express";
+import {
+  handleChat,
+  getSessionOpeningQuestion,
+} from "../controllers/chat.controller.js";
 
-const router = Router()
+const router = Router();
 
-router.post('/chat', handleChat)
+router.post("/chat", handleChat);
+router.get("/chat/session/:sessionId", getSessionOpeningQuestion);
 
-export default router
+export default router;
