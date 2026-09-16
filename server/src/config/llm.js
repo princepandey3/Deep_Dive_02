@@ -63,7 +63,6 @@ export function createLLM() {
         apiKey: process.env.GOOGLE_API_KEY,
         model: "gemini-2.5-flash",
         temperature: 0.4,
-        maxOutputTokens: 1024,
       });
 
     default:
