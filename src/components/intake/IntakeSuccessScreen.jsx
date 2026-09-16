@@ -18,6 +18,14 @@ export default function IntakeSuccessScreen({
 
   function startInterview() {
     if (!apiResult?.sessionId || !apiResult?.question) return;
+    
+    // Prime the speech synthesis API to bypass autoplay restrictions on the next screen
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const silentUtterance = new SpeechSynthesisUtterance('');
+      silentUtterance.volume = 0;
+      window.speechSynthesis.speak(silentUtterance);
+    }
+
     const params = new URLSearchParams({ sessionId: apiResult.sessionId });
     navigate(`/chat?${params.toString()}`);
   }
