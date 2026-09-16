@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react'
+import { getApiUrl } from '@/config/api.js'
 
 /**
  * useIntakeForm  (Phase 3 update)
@@ -129,7 +130,7 @@ export function useIntakeForm() {
     clearError('api')
 
     try {
-      const res = await fetch('/api/upload', {
+      const res = await fetch(getApiUrl('/api/upload'), {
         method: 'POST',
         body: formData,
         signal: AbortSignal.timeout ? AbortSignal.timeout(120000) : undefined,

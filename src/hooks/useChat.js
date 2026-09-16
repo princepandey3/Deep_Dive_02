@@ -14,6 +14,7 @@
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { getApiUrl } from '@/config/api.js'
 
 /**
  * @param {{ sessionId: string, openingQuestion: string }} params
@@ -84,7 +85,7 @@ export function useChat({ sessionId, openingQuestion }) {
     setIsSending(true)
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch(getApiUrl('/api/chat'), {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ sessionId, message: text }),

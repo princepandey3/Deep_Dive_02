@@ -1,7 +1,4 @@
-/**
- * src/components/chat/ChatInput.jsx
- * Premium input bar with voice controls, glowing focus, and status pill.
- */
+
 import React from "react";
 import { SendHorizonal, Mic, MicOff, VolumeX } from "lucide-react";
 
@@ -17,11 +14,11 @@ export default function ChatInput({
   onMicStart,
   onMicStop,
   onCancelSpeech,
-  aiStatus, // 'transcribing' | 'analyzing' | 'generating' | null
+  aiStatus,
 }) {
   const handleMicClick = () => (isListening ? onMicStop?.() : onMicStart?.());
 
-  // Dynamic status label cycling
+
   const statusLabel =
     {
       transcribing: "Transcribing audio…",
@@ -34,7 +31,7 @@ export default function ChatInput({
 
   return (
     <div className="flex items-end gap-2 p-4 border-t border-white/[0.06] bg-zinc-950/90 backdrop-blur-xl">
-      {/* ── Floating status pill ── */}
+
       {showPill && (
         <div
           aria-live="polite"
@@ -62,7 +59,6 @@ export default function ChatInput({
         </div>
       )}
 
-      {/* ── TTS cancel ── */}
       {isSpeechSupported && isSpeaking && (
         <button
           type="button"
@@ -77,7 +73,6 @@ export default function ChatInput({
         </button>
       )}
 
-      {/* ── Textarea ── */}
       <textarea
         className={`
           flex-1 resize-none rounded-xl px-4 py-3 text-sm
@@ -87,10 +82,9 @@ export default function ChatInput({
           min-h-[44px] max-h-[140px] leading-relaxed
           disabled:opacity-40
           focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/60
-          ${
-            isListening
-              ? "border-pulse/40 bg-pulse/5 focus:ring-pulse/40 focus:border-pulse/50"
-              : "border-white/[0.08]"
+          ${isListening
+            ? "border-pulse/40 bg-pulse/5 focus:ring-pulse/40 focus:border-pulse/50"
+            : "border-white/[0.08]"
           }
         `}
         rows={1}
@@ -120,12 +114,11 @@ export default function ChatInput({
           className={`
             flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center
             border transition-all duration-200 ease-in-out
-            ${
-              isListening
-                ? "bg-pulse/20 border-pulse/45 text-pulse scale-105 shadow-lg shadow-pulse/20"
-                : disabled || isSpeaking
-                  ? "bg-white/[0.03] border-white/[0.05] text-slate/25 cursor-not-allowed"
-                  : "bg-slate-800/60 border-white/[0.08] text-slate/60 hover:bg-slate-700/60 hover:text-fog hover:border-white/15 hover:-translate-y-0.5 active:scale-95"
+            ${isListening
+              ? "bg-pulse/20 border-pulse/45 text-pulse scale-105 shadow-lg shadow-pulse/20"
+              : disabled || isSpeaking
+                ? "bg-white/[0.03] border-white/[0.05] text-slate/25 cursor-not-allowed"
+                : "bg-slate-800/60 border-white/[0.08] text-slate/60 hover:bg-slate-700/60 hover:text-fog hover:border-white/15 hover:-translate-y-0.5 active:scale-95"
             }
           `}
         >
@@ -141,10 +134,9 @@ export default function ChatInput({
         className={`
           flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center
           border transition-all duration-200 ease-in-out
-          ${
-            disabled || !value.trim() || isListening
-              ? "bg-white/[0.03] border-white/[0.05] text-slate/25 cursor-not-allowed"
-              : "bg-accent border-accent/60 text-white hover:bg-blue-400 hover:border-blue-400 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/25 active:scale-95"
+          ${disabled || !value.trim() || isListening
+            ? "bg-white/[0.03] border-white/[0.05] text-slate/25 cursor-not-allowed"
+            : "bg-accent border-accent/60 text-white hover:bg-blue-400 hover:border-blue-400 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/25 active:scale-95"
           }
         `}
       >

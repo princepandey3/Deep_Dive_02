@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { BookOpen, ChevronDown, ChevronUp, User, Bot } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronUp, User, Bot, Volume2 } from "lucide-react";
+
 function SkeletonLoader() {
   return (
     <div className="space-y-2 py-0.5 w-48" aria-label="AI is thinking">
@@ -49,15 +50,21 @@ function RagSources({ sources }) {
   );
 }
 
-// ── Main ─────────────────────────────────────────────────────────────────────
-export default function ChatMessage({ role, content, isLoading, ragSources }) {
+export default function ChatMessage({
+  role,
+  content,
+  isLoading,
+  ragSources,
+  onSpeak,
+}) {
   const isUser = role === "user";
 
   return (
     <div
-      className={`flex gap-3 w-full animate-fade-up ${isUser ? "flex-row-reverse" : "flex-row"}`}
+      className={`flex gap-3 w-full animate-fade-up ${
+        isUser ? "flex-row-reverse" : "flex-row"
+      }`}
     >
-      {/* Avatar */}
       <div
         className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 ${
           isUser
@@ -72,10 +79,8 @@ export default function ChatMessage({ role, content, isLoading, ragSources }) {
           <Bot size={12} className="text-slate/70" />
         )}
       </div>
-
-      {/* Bubble */}
       <div
-        className={`max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+        className={`relative group max-w-[78%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
           isUser
             ? "bg-accent/10 border border-accent/20 text-fog rounded-tr-sm"
             : "bg-slate-900/60 border border-white/[0.07] text-fog/90 rounded-tl-sm backdrop-blur-sm"
@@ -86,7 +91,22 @@ export default function ChatMessage({ role, content, isLoading, ragSources }) {
         ) : (
           <>
             <p className="whitespace-pre-wrap">{content}</p>
-            {!isUser && <RagSources sources={ragSources} />}
+            {!isUser && (
+              <div className="flex items-center justify-between mt-2 pt-1 border-t border-white/[0.04]">
+                <RagSources sources={ragSources} />
+                {onSpeak && content && (
+                  <button
+                    type="button"
+                    onClick={() => onSpeak(content)}
+                    title="Read message aloud"
+                    className="flex items-center gap-1 text-[11px] text-slate/40 hover:text-accent transition-colors ml-auto pt-1"
+                  >
+                    <Volume2 size={12} />
+                    <span className="text-[10px] font-mono">Listen</span>
+                  </button>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

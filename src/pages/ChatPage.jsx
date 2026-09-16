@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import ChatInterface from "@/components/chat/ChatInterface.jsx";
+import { getApiUrl } from "@/config/api.js";
 
 export default function ChatPage() {
   const [params] = useSearchParams();
@@ -17,7 +18,7 @@ export default function ChatPage() {
       return;
     }
 
-    fetch(`/api/chat/session/${sessionId}`)
+    fetch(getApiUrl(`/api/chat/session/${sessionId}`))
       .then((r) => r.json())
       .then((json) => {
         if (json.success) {

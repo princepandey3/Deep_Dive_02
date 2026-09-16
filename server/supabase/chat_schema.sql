@@ -1,16 +1,4 @@
--- ════════════════════════════════════════════════════════════════════════════
---  DeepDive Interviewer — Phase 5: Chat History Schema
---
---  New tables:
---    chat_sessions  — one row per interview (links to interview_sessions)
---    chat_messages  — every message turn, ordered by turn_index
---
---  Paste into: Supabase Dashboard → SQL Editor → New query → Run (F5)
---  Safe to re-run: all statements use IF NOT EXISTS / OR REPLACE.
--- ════════════════════════════════════════════════════════════════════════════
 
-
--- ── 1. chat_sessions ─────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.chat_sessions (
   id                   uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
   interview_session_id uuid        NOT NULL
@@ -26,7 +14,6 @@ CREATE INDEX IF NOT EXISTS chat_sessions_interview_session_id_idx
 
 ALTER TABLE public.chat_sessions ENABLE ROW LEVEL SECURITY;
 
--- Allow the service role (used by the backend) full access
 DROP POLICY IF EXISTS "service role full access" ON public.chat_sessions;
 CREATE POLICY "service role full access" ON public.chat_sessions
   FOR ALL TO service_role
@@ -36,7 +23,6 @@ COMMENT ON TABLE public.chat_sessions IS
   'One chat session per uploaded resume/JD pair. Links to interview_sessions.';
 
 
--- ── 2. chat_messages ─────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.chat_messages (
   id              bigserial    PRIMARY KEY,
   chat_session_id uuid         NOT NULL
@@ -56,7 +42,6 @@ CREATE INDEX IF NOT EXISTS chat_messages_created_at_idx
 
 ALTER TABLE public.chat_messages ENABLE ROW LEVEL SECURITY;
 
--- Allow the service role full access
 DROP POLICY IF EXISTS "service role full access" ON public.chat_messages;
 CREATE POLICY "service role full access" ON public.chat_messages
   FOR ALL TO service_role
@@ -65,8 +50,6 @@ CREATE POLICY "service role full access" ON public.chat_messages
 COMMENT ON TABLE public.chat_messages IS
   'Every turn in a chat session. role is ''user'' or ''assistant''.';
 
-
--- ── 3. Auto-update last_active_at on new messages ────────────────────────────
 CREATE OR REPLACE FUNCTION public.update_chat_session_last_active()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
 BEGIN
@@ -83,7 +66,6 @@ CREATE TRIGGER trg_chat_messages_update_session
   FOR EACH ROW EXECUTE FUNCTION public.update_chat_session_last_active();
 
 
--- ── 4. Helper view ────────────────────────────────────────────────────────────
 CREATE OR REPLACE VIEW public.v_chat_threads AS
 SELECT
   cm.id              AS message_id,
@@ -99,8 +81,6 @@ FROM public.chat_messages   cm
 JOIN public.chat_sessions   cs ON cs.id = cm.chat_session_id
 ORDER BY cm.chat_session_id, cm.turn_index;
 
-
--- ── 5. Verify ─────────────────────────────────────────────────────────────────
 SELECT table_name FROM information_schema.tables
   WHERE table_schema = 'public'
     AND table_name IN ('chat_sessions', 'chat_messages');

@@ -1,7 +1,7 @@
 import React from 'react'
 import { ArrowRight, CheckCircle2 } from 'lucide-react'
 
-/* ─── Animated SVG lightning bolt ─── */
+
 function LightningBolt({ className = '' }) {
   return (
     <svg
@@ -23,18 +23,18 @@ function LightningBolt({ className = '' }) {
   )
 }
 
-/* ─── Lightning loading overlay ─── */
+
 function LightningLoader() {
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-2">
-      {/* Pulsing ring with bolt inside */}
+
       <div
         className="relative flex items-center justify-center
                    w-14 h-14 rounded-full
                    bg-accent/10 border border-accent/30
                    lightning-loader-ring"
       >
-        {/* Orbiting sparks */}
+
         {[0, 72, 144, 216, 288].map((deg, i) => (
           <span
             key={i}
@@ -45,16 +45,16 @@ function LightningLoader() {
             }}
           />
         ))}
-        {/* Center bolt */}
+
         <LightningBolt className="text-blue-300 drop-shadow-[0_0_6px_rgba(147,197,253,0.8)]" />
       </div>
 
-      {/* Animated text */}
+
       <div className="flex flex-col items-center gap-1">
         <span className="lightning-loader-text font-mono text-xs tracking-widest uppercase">
           Initialising session…
         </span>
-        {/* Travelling dots */}
+
         <div className="flex gap-1 mt-1">
           {[0, 1, 2, 3, 4].map(i => (
             <span
@@ -69,7 +69,6 @@ function LightningLoader() {
   )
 }
 
-/* ─── Main component ─── */
 export default function IntakeSubmitBar({ isReady, isSubmitting, hasResume, hasJd }) {
   const disabled = !isReady || isSubmitting
 
@@ -84,13 +83,12 @@ export default function IntakeSubmitBar({ isReady, isSubmitting, hasResume, hasJ
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
 
-      {/* Readiness indicators */}
+
       <div className="flex items-center gap-4">
-        <Dot label="Résumé"          done={hasResume} />
-        <Dot label="Job Description" done={hasJd}     />
+        <Dot label="Résumé" done={hasResume} />
+        <Dot label="Job Description" done={hasJd} />
       </div>
 
-      {/* Submit */}
       <button
         type="submit"
         disabled={disabled}

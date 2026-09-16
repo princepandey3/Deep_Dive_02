@@ -4,11 +4,11 @@
  */
 import React, { useCallback, useEffect, useState } from 'react'
 import { AlertCircle, LogOut, Mic2, MicOff, Volume2 } from 'lucide-react'
-import { useChat }   from '@/hooks/useChat.js'
+import { useChat } from '@/hooks/useChat.js'
 import { useSpeech } from '@/hooks/useSpeech.js'
-import ChatMessage   from './ChatMessage.jsx'
-import ChatInput     from './ChatInput.jsx'
-import StatusBadge   from '@/components/ui/StatusBadge.jsx'
+import ChatMessage from './ChatMessage.jsx'
+import ChatInput from './ChatInput.jsx'
+import StatusBadge from '@/components/ui/StatusBadge.jsx'
 
 // Status cycle: transcribing → analyzing → generating
 function useAiStatus(isSending) {
@@ -76,7 +76,6 @@ export default function ChatInterface({ sessionId, openingQuestion, onEndIntervi
 
   const lastSpokenIdRef = React.useRef(null)
 
-  // Auto-read new AI messages once per message
   useEffect(() => {
     if (!isSpeechSupported || messages.length === 0) return
     const last = messages[messages.length - 1]
@@ -87,32 +86,34 @@ export default function ChatInterface({ sessionId, openingQuestion, onEndIntervi
       lastSpokenIdRef.current !== last.id
     ) {
       lastSpokenIdRef.current = last.id
-      speak(last.content)
+      const timer = setTimeout(() => {
+        speak(last.content)
+      }, 150)
+      return () => clearTimeout(timer)
     }
   }, [messages, speak, isSpeechSupported])
 
   const headerLabel = isListening
     ? 'Listening…'
     : isSpeaking
-    ? 'AI Speaking'
-    : isSending
-    ? (aiStatus === 'transcribing' ? 'Transcribing…'
-       : aiStatus === 'analyzing'  ? 'Analyzing…'
-       : 'Generating…')
-    : 'Live Interview'
+      ? 'AI Speaking'
+      : isSending
+        ? (aiStatus === 'transcribing' ? 'Transcribing…'
+          : aiStatus === 'analyzing' ? 'Analyzing…'
+            : 'Generating…')
+        : 'Live Interview'
 
   const headerVariant = isListening ? 'pulse' : 'accent'
 
   return (
     <div className="flex flex-col h-full min-h-0">
 
-      {/* ── Header ── */}
+
       <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.06] flex-shrink-0 bg-zinc-950/40 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <StatusBadge variant={headerVariant}>
-            <span className={`w-1.5 h-1.5 rounded-full inline-block animate-pulse ${
-              isListening ? 'bg-pulse' : 'bg-accent'
-            }`} />
+            <span className={`w-1.5 h-1.5 rounded-full inline-block animate-pulse ${isListening ? 'bg-pulse' : 'bg-accent'
+              }`} />
             <span className="transition-all duration-300">{headerLabel}</span>
           </StatusBadge>
           <span className="font-mono text-[10px] text-slate/30 hidden sm:block">
@@ -142,7 +143,7 @@ export default function ChatInterface({ sessionId, openingQuestion, onEndIntervi
 
       {!isSpeechSupported && messages.length === 0 && <NoSpeechBanner />}
 
-      {/* ── Messages ── */}
+
       <div
         className="flex-1 overflow-y-auto px-4 py-5 space-y-4 min-h-0"
         role="log"
@@ -152,14 +153,15 @@ export default function ChatInterface({ sessionId, openingQuestion, onEndIntervi
         {messages.length === 0
           ? <EmptyState isSpeechSupported={isSpeechSupported} />
           : messages.map((msg) => (
-              <ChatMessage
-                key={msg.id}
-                role={msg.role}
-                content={msg.content}
-                isLoading={msg.isLoading}
-                ragSources={msg.ragSources}
-              />
-            ))
+            <ChatMessage
+              key={msg.id}
+              role={msg.role}
+              content={msg.content}
+              isLoading={msg.isLoading}
+              ragSources={msg.ragSources}
+              onSpeak={speak}
+            />
+          ))
         }
 
         {error && (
@@ -172,7 +174,7 @@ export default function ChatInterface({ sessionId, openingQuestion, onEndIntervi
         <div ref={bottomRef} aria-hidden="true" />
       </div>
 
-      {/* ── Input ── */}
+
       <div className="flex-shrink-0 relative">
         <ChatInput
           value={inputText}
