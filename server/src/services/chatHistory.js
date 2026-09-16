@@ -38,6 +38,19 @@ export async function createChatSession(interviewSessionId, openingQuestion) {
 
   if (error) throw sbErr("Failed to create chat session", error);
 
+  if (openingQuestion) {
+    const { error: msgErr } = await supabase.from("chat_messages").insert({
+      chat_session_id: data.id,
+      role: "assistant",
+      content: openingQuestion,
+      turn_index: 1,
+      rag_sources: null,
+    });
+    if (msgErr) {
+      console.warn("[chatHistory] Could not insert initial opening message:", msgErr.message);
+    }
+  }
+
   return { chatSessionId: data.id };
 }
 

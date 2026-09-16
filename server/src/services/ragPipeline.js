@@ -2,6 +2,7 @@ import supabase from "../config/supabase.js";
 import { chunkAll } from "./chunker.js";
 import { insertDocuments, similaritySearch } from "./vectorStore.js";
 import { createLLM } from "../config/llm.js";
+import { Document } from "@langchain/core/documents";
 import {
   ChatPromptTemplate,
   SystemMessagePromptTemplate,
@@ -57,25 +58,21 @@ const RETRIEVAL_QUERY =
   "job requirements qualifications responsibilities technologies";
 
 const SYSTEM_TEMPLATE = `You are an expert technical interviewer conducting a deep-dive behavioural \
-and technical interview. Your task is to craft a single, high-quality opening interview question.
+and technical interview. Your task is to craft a complete, high-quality opening interview question.
 
 STRICT RULES you must follow:
 1. Base the question EXCLUSIVELY on the context passages provided below.
-2. The question MUST bridge something concrete from the candidate's résumé with a \
-specific requirement or challenge described in the job description.
-3. Ask about a real, verifiable detail (a project, a technology, a role, a metric) \
-that appears in the résumé context — never invent details.
-4. The question should invite a structured STAR-format answer (Situation, Task, Action, Result).
-5. Ask only ONE question. Do not add preamble, explanation, or follow-up questions.
-6. If the context is insufficient to ask a grounded question, respond only with: \
-"INSUFFICIENT_CONTEXT"
+2. The opening should begin with a brief, professional interviewer greeting and context setup (1–2 sentences) bridging the candidate's background to the target job description requirements.
+3. Formulate ONE full, detailed, and specific interview question asking about a real, verifiable detail (a project, technology, role, or metric) from the résumé that matches the job description.
+4. The question must invite a structured STAR-format answer (Situation, Task, Action, Result) with full clarity — do not abbreviate or trim down the question.
+5. Do not add multiple questions or follow-up questions.
+6. If the context is insufficient to ask a grounded question, respond only with: "INSUFFICIENT_CONTEXT"
 
 ─── CONTEXT PASSAGES ───────────────────────────────────────────────────────────
 {context}
 ────────────────────────────────────────────────────────────────────────────────`;
 
-const HUMAN_TEMPLATE = `Generate the opening interview question now. Output only the question text, \
-nothing else.`;
+const HUMAN_TEMPLATE = `Generate the complete opening interview question now. Provide the full interviewer statement and question.`;
 
 const interviewPrompt = ChatPromptTemplate.fromMessages([
   SystemMessagePromptTemplate.fromTemplate(SYSTEM_TEMPLATE),
@@ -93,9 +90,43 @@ function formatContext(docs) {
 }
 
 export async function generateOpeningQuestion(sessionId) {
-  const docs = await similaritySearch(RETRIEVAL_QUERY, sessionId, 3);
+  let docs = await similaritySearch(RETRIEVAL_QUERY, sessionId, 4);
 
-  if (!docs.length) {
+  // If similarity search didn't yield enough chunks, retrieve directly by session_id
+  if (!docs || docs.length < 2) {
+    const { data: resumeRows } = await supabase
+      .from("documents")
+      .select("content, metadata, source")
+      .eq("session_id", sessionId)
+      .eq("source", "resume")
+      .order("chunk_index", { ascending: true })
+      .limit(3);
+
+    const { data: jdRows } = await supabase
+      .from("documents")
+      .select("content, metadata, source")
+      .eq("session_id", sessionId)
+      .eq("source", "job_description")
+      .order("chunk_index", { ascending: true })
+      .limit(3);
+
+    const combined = [...(resumeRows || []), ...(jdRows || [])];
+    if (combined.length > 0) {
+      docs = combined.map(
+        (r) =>
+          new Document({
+            pageContent: r.content,
+            metadata: {
+              ...r.metadata,
+              source: r.source,
+              session_id: sessionId,
+            },
+          })
+      );
+    }
+  }
+
+  if (!docs || !docs.length) {
     throw Object.assign(
       new Error(
         "No document chunks found for this session. Was ingestion completed?",

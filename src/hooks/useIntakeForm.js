@@ -132,11 +132,17 @@ export function useIntakeForm() {
       const res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
+        signal: AbortSignal.timeout ? AbortSignal.timeout(120000) : undefined,
         // Note: do NOT set Content-Type manually — the browser sets it with
         // the correct boundary when you pass a FormData body.
       })
 
-      const json = await res.json()
+      let json
+      try {
+        json = await res.json()
+      } catch {
+        throw new Error(`Server returned status ${res.status} with non-JSON response`)
+      }
 
       if (!res.ok || !json.success) {
         throw new Error(json.error || `Server error ${res.status}`)
@@ -145,7 +151,10 @@ export function useIntakeForm() {
       setApiResult(json.data)
       setSubmitted(true)
     } catch (err) {
-      setErrors((prev) => ({ ...prev, api: err.message }))
+      const msg = err.name === 'TimeoutError'
+        ? 'Request timed out after 2 minutes. The backend might still be processing embeddings or AI generation.'
+        : err.message
+      setErrors((prev) => ({ ...prev, api: msg }))
     } finally {
       setIsSubmitting(false)
     }

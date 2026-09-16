@@ -74,11 +74,19 @@ export default function ChatInterface({ sessionId, openingQuestion, onEndIntervi
     speak, cancelSpeech,
   } = useSpeech({ onTranscript: handleTranscript })
 
-  // Auto-read new AI messages
+  const lastSpokenIdRef = React.useRef(null)
+
+  // Auto-read new AI messages once per message
   useEffect(() => {
     if (!isSpeechSupported || messages.length === 0) return
     const last = messages[messages.length - 1]
-    if (last.role === 'assistant' && !last.isLoading && last.content) {
+    if (
+      last.role === 'assistant' &&
+      !last.isLoading &&
+      last.content &&
+      lastSpokenIdRef.current !== last.id
+    ) {
+      lastSpokenIdRef.current = last.id
       speak(last.content)
     }
   }, [messages, speak, isSpeechSupported])

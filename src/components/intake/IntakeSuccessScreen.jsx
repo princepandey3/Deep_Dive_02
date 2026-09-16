@@ -20,7 +20,6 @@ export default function IntakeSuccessScreen({
     if (!apiResult?.sessionId || !apiResult?.question) return;
     const params = new URLSearchParams({ sessionId: apiResult.sessionId });
     navigate(`/chat?${params.toString()}`);
-    navigate(`/chat?${params.toString()}`);
   }
 
   return (

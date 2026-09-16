@@ -32,11 +32,23 @@ if (missing.length) {
   console.error('\n   Add them to server/.env and restart.\n')
   process.exit(1)
 }
+process.on('uncaughtException', (err) => {
+  console.error('[server] Uncaught exception:', err)
+})
 
-app.listen(PORT, () => {
+process.on('unhandledRejection', (reason) => {
+  console.error('[server] Unhandled rejection:', reason)
+})
+
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🚀  DeepDive API server running on http://localhost:${PORT}`)
   console.log(`   Environment      : ${process.env.NODE_ENV || 'development'}`)
   console.log(`   Supabase URL     : ✓ set`)
   console.log(`   Embedding model  : ${EMBEDDING_PROVIDER}`)
   console.log(`   LLM provider     : ${LLM_PROVIDER}\n`)
 })
+
+// Keep timeouts in sync with Vite proxy (120s) to prevent premature ECONNRESET
+server.keepAliveTimeout = 120000
+server.headersTimeout = 125000
+server.requestTimeout = 120000

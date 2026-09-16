@@ -53,7 +53,7 @@ export function createLLM() {
         openAIApiKey: process.env.OPENAI_API_KEY,
         modelName: "gpt-4o",
         temperature: 0.4,
-        maxTokens: 512,
+        maxTokens: 1024,
       });
 
     case "gemini":
@@ -63,7 +63,7 @@ export function createLLM() {
         apiKey: process.env.GOOGLE_API_KEY,
         model: "gemini-2.5-flash",
         temperature: 0.4,
-        maxOutputTokens: 512,
+        maxOutputTokens: 1024,
       });
 
     default:

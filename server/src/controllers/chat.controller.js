@@ -87,7 +87,14 @@ export async function handleChat(req, res, next) {
     const chatSessionId = chatSession.id;
 
     const historyRows = await getMessages(chatSessionId);
-    const messageHistory = buildMessageHistory(historyRows);
+    const hasOpening = historyRows.some(
+      (r) => r.role === "assistant" && r.content === chatSession.opening_question
+    );
+    const allHistory =
+      chatSession.opening_question && !hasOpening
+        ? [{ role: "assistant", content: chatSession.opening_question }, ...historyRows]
+        : historyRows;
+    const messageHistory = buildMessageHistory(allHistory);
 
     const ragDocs = await similaritySearch(userText, sessionId);
     const context = formatContext(ragDocs);

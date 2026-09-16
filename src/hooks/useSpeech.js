@@ -33,6 +33,15 @@ export function useSpeech({ onTranscript }) {
   const [isSpeaking, setIsSpeaking]   = useState(false)
 
   const recognitionRef = useRef(null)
+  const activeUtteranceRef = useRef(null)
+  const resumeIntervalRef = useRef(null)
+
+  const clearResumeInterval = () => {
+    if (resumeIntervalRef.current) {
+      clearInterval(resumeIntervalRef.current)
+      resumeIntervalRef.current = null
+    }
+  }
 
   // ── Initialise SpeechRecognition once ────────────────────────────────────
   useEffect(() => {
@@ -72,7 +81,11 @@ export function useSpeech({ onTranscript }) {
   const startListening = useCallback(() => {
     if (!recognitionRef.current || isListening) return
     // Stop any ongoing TTS so the mic doesn't pick it up
-    if (hasSynthesis) window.speechSynthesis.cancel()
+    if (hasSynthesis) {
+      clearResumeInterval()
+      window.speechSynthesis.cancel()
+      activeUtteranceRef.current = null
+    }
     setIsSpeaking(false)
     try {
       recognitionRef.current.start()
@@ -92,31 +105,64 @@ export function useSpeech({ onTranscript }) {
   const speak = useCallback((text) => {
     if (!hasSynthesis || !text) return
 
-    // Cancel anything currently playing
+    clearResumeInterval()
     window.speechSynthesis.cancel()
 
-    const utter        = new SpeechSynthesisUtterance(text)
-    utter.lang         = 'en-US'
-    utter.rate         = 0.95
-    utter.pitch        = 1.0
+    // Clean text for speech: strip markdown formatting & symbols
+    const cleanText = text
+      .replace(/[*#_`~[\]()]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+
+    if (!cleanText) return
+
+    const utter = new SpeechSynthesisUtterance(cleanText)
+    utter.lang  = 'en-US'
+    utter.rate  = 0.95
+    utter.pitch = 1.0
+
+    // Prevent Chromium garbage-collection bug that terminates speech mid-sentence
+    activeUtteranceRef.current = utter
 
     // Pick a natural-sounding voice when available
     const voices = window.speechSynthesis.getVoices()
     const preferred = voices.find(
-      (v) => v.lang === 'en-US' && /Google|Samantha|Alex|Daniel/i.test(v.name)
+      (v) => v.lang === 'en-US' && /Google|Samantha|Alex|Daniel|Natural/i.test(v.name)
     )
     if (preferred) utter.voice = preferred
 
-    utter.onstart = () => setIsSpeaking(true)
-    utter.onend   = () => setIsSpeaking(false)
-    utter.onerror = () => setIsSpeaking(false)
+    utter.onstart = () => {
+      setIsSpeaking(true)
+      // Chromium speech cut-off heartbeat fix
+      clearResumeInterval()
+      resumeIntervalRef.current = setInterval(() => {
+        if (window.speechSynthesis && window.speechSynthesis.speaking) {
+          window.speechSynthesis.pause()
+          window.speechSynthesis.resume()
+        }
+      }, 10000)
+    }
+
+    utter.onend = () => {
+      clearResumeInterval()
+      activeUtteranceRef.current = null
+      setIsSpeaking(false)
+    }
+
+    utter.onerror = () => {
+      clearResumeInterval()
+      activeUtteranceRef.current = null
+      setIsSpeaking(false)
+    }
 
     window.speechSynthesis.speak(utter)
   }, [])
 
   const cancelSpeech = useCallback(() => {
     if (!hasSynthesis) return
+    clearResumeInterval()
     window.speechSynthesis.cancel()
+    activeUtteranceRef.current = null
     setIsSpeaking(false)
   }, [])
 
@@ -124,7 +170,11 @@ export function useSpeech({ onTranscript }) {
   useEffect(() => {
     return () => {
       recognitionRef.current?.abort()
-      if (hasSynthesis) window.speechSynthesis.cancel()
+      if (hasSynthesis) {
+        clearResumeInterval()
+        window.speechSynthesis.cancel()
+        activeUtteranceRef.current = null
+      }
     }
   }, [])
 

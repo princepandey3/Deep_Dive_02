@@ -16,11 +16,18 @@ export function errorHandler(err, _req, res, _next) {
 
 
   if (status >= 500) {
-    console.error('[DeepDive] Unhandled error:', err)
+    console.error('[DeepDive] Server error:', err)
+  }
+
+  let errorMessage = err.message || 'Internal server error'
+  if (errorMessage.includes('ENOTFOUND') && errorMessage.includes('supabase.co')) {
+    errorMessage = 'Failed to connect to Supabase: domain not found. If your Supabase project was paused due to inactivity, please unpause it in your Supabase dashboard.'
+  } else if (errorMessage.includes('fetch failed')) {
+    errorMessage = `Network request failed: ${errorMessage}. Please check your database / API connectivity.`
   }
 
   res.status(status).json({
     success: false,
-    error: status < 500 ? err.message : 'Internal server error',
+    error: errorMessage,
   })
 }
